@@ -76,3 +76,7 @@ fabric.properties
 # Project temp data
 /youtube_uploader_selenium/__pycache__/
 /cookies/
+
+.vscode
+__pycache__
+geckodriver.log
