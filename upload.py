@@ -28,8 +28,8 @@ if __name__ == "__main__":
     parser.add_argument("--profile", help="Path to the firefox profile")
     args = parser.parse_args()
 
-    date_str = "June 3, 2023"
-    for video_name, video_path in get_media_list("H:\\Downloads\\6.3"):
+    date_str = "October 14, 2023"
+    for video_name, video_path in get_media_list("H:\\Downloads\\10.14"):
         main(
             video_name,
             video_path,
