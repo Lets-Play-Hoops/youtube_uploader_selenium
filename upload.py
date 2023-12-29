@@ -5,17 +5,23 @@ from media_finder import get_media_list
 
 
 def main(
-    video_name: str,
-    video_path: str,
+    folder_path: str,
     date_str: str,
     thumbnail_path: Optional[str] = None,
     profile_path: Optional[str] = None,
 ):
-    uploader = YouTubeUploader(
-        video_name, video_path, date_str, thumbnail_path, profile_path
-    )
-    was_video_uploaded, video_id = uploader.upload()
-    assert was_video_uploaded
+    succeed = []
+    failed = []
+    uploader = YouTubeUploader(thumbnail_path, profile_path)
+    for video_name, video_path in get_media_list(folder_path):
+        was_video_uploaded, video_id = uploader.upload(video_name, video_path, date_str)
+        if was_video_uploaded:
+            succeed.append(video_name, video_id)
+        else:
+            failed.append(video_name)
+
+    print(f"finished all uploads. succeed vidoes: {succeed}, failed videos: {failed}.")
+    uploader.__quit()
 
 
 if __name__ == "__main__":
@@ -28,12 +34,11 @@ if __name__ == "__main__":
     parser.add_argument("--profile", help="Path to the firefox profile")
     args = parser.parse_args()
 
-    date_str = "October 14, 2023"
-    for video_name, video_path in get_media_list("H:\\Downloads\\10.14"):
-        main(
-            video_name,
-            video_path,
-            date_str,
-            args.thumbnail,
-            profile_path=args.profile,
-        )
+    date_str = "December 16, 2023"
+    folder_path = "H:\\Downloads\\12.16"
+    main(
+        folder_path,
+        date_str,
+        args.thumbnail,
+        profile_path=args.profile,
+    )

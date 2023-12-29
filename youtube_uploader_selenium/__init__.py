@@ -29,21 +29,15 @@ class YouTubeUploader:
 
     def __init__(
         self,
-        video_name: str,
-        video_path: str,
-        date_str: str,
         thumbnail_path: Optional[str] = None,
         profile_path: Optional[str] = str(Path.cwd()) + "/profile",
     ) -> None:
-        self.video_path = video_path
         self.thumbnail_path = thumbnail_path
-        self.metadata_dict = load_metadata(video_name, date_str)
         self.browser = Firefox(
             profile_path=profile_path, pickle_cookies=True, full_screen=False
         )
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.DEBUG)
-        self.__validate_inputs()
 
         self.is_mac = False
         if not any(os_name in platform.platform() for os_name in ["Windows", "Linux"]):
@@ -52,6 +46,9 @@ class YouTubeUploader:
         self.logger.debug(
             "Use profile path: {}".format(self.browser.source_profile_path)
         )
+
+        # for checking whether it is logged in
+        self.has_logged_in = False
 
     def __validate_inputs(self):
         if not self.metadata_dict[Constant.VIDEO_TITLE]:
@@ -65,13 +62,17 @@ class YouTubeUploader:
                 "The video description was not found in a metadata file"
             )
 
-    def upload(self):
+    def upload(self, video_name, video_path, date_str):
         try:
-            self.__login()
+            if not self.has_logged_in:
+                self.__login()
+            self.video_path = video_path
+            self.metadata_dict = load_metadata(video_name, date_str)
+            self.__validate_inputs()
             return self.__upload()
         except Exception as e:
             print(e)
-            self.__quit()
+            self.quit()
             raise
 
     def __login(self):
@@ -94,6 +95,7 @@ class YouTubeUploader:
             self.logger.debug(
                 "Saved cookies to {}".format(self.browser.cookies_folder_path)
             )
+        self.has_logged_in = True
 
     def __clear_field(self, field):
         field.click()
@@ -303,8 +305,10 @@ class YouTubeUploader:
         done_button.click()
         self.logger.debug("Published the video with video_id = {}".format(video_id))
         time.sleep(Constant.USER_WAITING_TIME)
+        # instead of quitting, get back to youtube home page for the next round of upload.
+        self.logger.debug("Returning to Youtube home page.")
         self.browser.get(Constant.YOUTUBE_URL)
-        self.__quit()
+        time.sleep(Constant.USER_WAITING_TIME)
         return True, video_id
 
     def __get_video_id(self) -> Optional[str]:
@@ -322,5 +326,5 @@ class YouTubeUploader:
             pass
         return video_id
 
-    def __quit(self):
+    def quit(self):
         self.browser.driver.quit()
