@@ -14,6 +14,8 @@ from .metadata import get_metadata
 from pathlib import Path
 import logging
 import platform
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 logging.basicConfig()
 
@@ -113,7 +115,6 @@ class YouTubeUploader:
         else:
             field.click()
             time.sleep(Constant.USER_WAITING_TIME)
-
         field.send_keys(string)
 
     def __upload(self) -> Tuple[bool, Optional[str]]:
@@ -180,7 +181,11 @@ class YouTubeUploader:
         if playlist:
             self.browser.find(By.CLASS_NAME, Constant.PL_DROPDOWN_CLASS).click()
             time.sleep(Constant.USER_WAITING_TIME)
-            search_field = self.browser.find(By.ID, Constant.PL_SEARCH_INPUT_ID)
+            # search_field = self.browser.find(By.ID, Constant.PL_SEARCH_INPUT_ID)
+            search_field = self.browser.driver.find_element_by_css_selector(
+                "ytcp-search-bar #search-input.search-input"
+            )
+            time.sleep(Constant.USER_WAITING_TIME * 5)
             self.__write_in_field(search_field, playlist)
             time.sleep(Constant.USER_WAITING_TIME * 2)
             playlist_items_container = self.browser.find(
