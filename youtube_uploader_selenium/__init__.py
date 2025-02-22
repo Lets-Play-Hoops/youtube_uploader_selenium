@@ -236,6 +236,8 @@ class YouTubeUploader:
             )
             done_button.click()
 
+        time.sleep(Constant.USER_WAITING_TIME)
+
         # Advanced options
         self.browser.find(By.ID, Constant.ADVANCED_BUTTON_ID).click()
         self.logger.debug("Clicked MORE OPTIONS")
@@ -251,12 +253,15 @@ class YouTubeUploader:
 
         self.browser.find(By.ID, Constant.NEXT_BUTTON).click()
         self.logger.debug("Clicked {} one".format(Constant.NEXT_BUTTON))
+        time.sleep(Constant.USER_WAITING_TIME)
 
         self.browser.find(By.ID, Constant.NEXT_BUTTON).click()
         self.logger.debug("Clicked {} two".format(Constant.NEXT_BUTTON))
+        time.sleep(Constant.USER_WAITING_TIME)
 
         self.browser.find(By.ID, Constant.NEXT_BUTTON).click()
         self.logger.debug("Clicked {} three".format(Constant.NEXT_BUTTON))
+        time.sleep(Constant.USER_WAITING_TIME)
 
         schedule = self.metadata_dict[Constant.VIDEO_SCHEDULE]
         if schedule:

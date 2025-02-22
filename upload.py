@@ -34,8 +34,8 @@ if __name__ == "__main__":
     parser.add_argument("--profile", help="Path to the firefox profile")
     args = parser.parse_args()
 
-    date_str = "June 23, 2024"
-    folder_path = "H:\\Downloads\\6.23"
+    date_str = "Feb 15, 2025"
+    folder_path = "H:\\Downloads\\2.15"
     main(
         folder_path,
         date_str,

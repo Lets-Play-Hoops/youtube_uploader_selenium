@@ -2,6 +2,8 @@ from .Constant import *
 
 
 def get_metadata(video_name: str, date_str: str):
+    if "_1" in video_name:
+        video_name = video_name.replace("_1", "")
     if "highlight" in video_name.lower():
         video_name = video_name.lower().replace("highlight", "highlights")
         playlist = "Let's Play Hoops Basketball Game Highlights"
